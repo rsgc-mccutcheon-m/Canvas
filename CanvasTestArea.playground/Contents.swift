@@ -24,11 +24,13 @@ let canvas = Canvas(width: 500, height: 500)
 canvas
 
 let angle : Degrees = 60
-let distance = 100
-let iterations = 5
-let axiom = "F++F++F"
-var startX = 10
-var startY = 10
+let distance = 300
+let iterations = 3
+var axiom = "F++F++F"
+let rule = "F-F++F-F"
+var startX = 100
+var startY = 100
+var reduction = 3
 
 // Draw the axes
 canvas.drawAxes()
@@ -39,14 +41,16 @@ startX = 0
 startY = 0
 canvas.saveState()
 
-func drawAxiom(axiom: String) {
-
+func drawAxiom(axiom: String, reductionFactor: Int, length: Int, iteration: Int) {
+canvas.saveState()
 for char in axiom.characters {
     
     if char == "F" {
         
-        canvas.drawLine(fromX: startX, fromY: startY, toX: distance, toY: startY)
-        canvas.translate(byX: distance, byY: 0)
+        var newlength = Int(Double(length) / (pow(Double(reductionFactor), Double(iteration))))
+        
+        canvas.drawLine(fromX: startX, fromY: startY, toX: newlength, toY: startY)
+        canvas.translate(byX: newlength, byY: 0)
        // canvas.drawAxes()
         
     } else if char == "+" {
@@ -69,10 +73,33 @@ for char in axiom.characters {
 canvas.restoreState()
 }
 
-for iteration in 0...iterations {
-
+func expandAxiom(currentAxiom: String, productionRule: String) -> String {
     
-// Add code below...
+   var inputAxiom = currentAxiom
+    var inputRule = productionRule
+    var newAxiom : String = ""
+    for char in inputAxiom.characters {
+        
+        if char == "F" {
+        
+        newAxiom.append(productionRule)
+            
+        } else {
+            
+        newAxiom.append(char)
+            
+        }
+    
+    }
+    
+    return newAxiom
+}
+
+for iteration in 0...iterations {
+    
+    drawAxiom(axiom: axiom, reductionFactor: reduction, length: distance, iteration: iteration)
+    
+    axiom = expandAxiom(currentAxiom: axiom, productionRule: rule)
     
 }
 /*:
